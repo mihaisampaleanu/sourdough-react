@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>sourdough</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <style>
+      html {  line-height: 1.15;}body {  margin: 0;}* {  box-sizing: border-box;  border-width: 0;  border-style: solid;}p,li,ul,pre,div,h1,h2,h3,h4,h5,h6 {  margin: 0;  padding: 0;}button,input,optgroup,select,textarea {  font-family: inherit;  font-size: 100%;  line-height: 1.15;  margin: 0;}button,select {  text-transform: none;}button,[type="button"],[type="reset"],[type="submit"] {  -webkit-appearance: button;}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner {  border-style: none;  padding: 0;}button:-moz-focus,[type="button"]:-moz-focus,[type="reset"]:-moz-focus,[type="submit"]:-moz-focus {  outline: 1px dotted ButtonText;}a {  color: inherit;  text-decoration: inherit;}input {  padding: 2px 4px;}img {  display: block;}
+    </style>
+    <style>
+      body {      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen","Ubuntu", "Cantarell", "Fira Sans","Droid Sans", "Helvetica Neue", sans-serif;      font-size: 16px;      line-height: 1.55;      color: #2b2b2b;      background-color: #fff    }
+    </style>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script>
+
+      function breadRecipeCreator() {
+        var doughWeight = Number(
+          document.getElementById("doughWeightFinal") &&
+            document.getElementById("doughWeightFinal").value
+        );
+        if (doughWeight == 0) {
+          return swal(
+            "It's hard to bake without any ingredients. You must include how much dough you want."
+          );
+        }
+        var hydrationDough = Number(
+          document.getElementById("hydrationDough") &&
+            document.getElementById("hydrationDough").value
+        );
+        if (hydrationDough < 50) {
+          swal(
+            "Are you baking a dry brick? You may want to increase the hydration level."
+          );
+        }
+        var sourDoughHydration = Number(
+          document.getElementById("sourDoughHydration") &&
+            document.getElementById("sourDoughHydration").value
+        );
+        var sourDoughPercentage = Number(
+          document.getElementById("sourDoughPercentage") &&
+            document.getElementById("sourDoughPercentage").value
+        );
+        var totalLiquidPercentage = totalNames("liquid");
+        var totalSolidPercentage = totalNames("solid");
+        var totalPercentages = totalClass("ingredient");
+        var eggPercentage = Number(
+          document.getElementById("eggPercentage") &&
+            document.getElementById("eggPercentage").value
+        );
+        var honeyPercentage = Number(
+          document.getElementById("honeyPercentage") &&
+            document.getElementById("honeyPercentage").value
+        );
+        var saltPercentage = Number(
+          document.getElementById("saltPercentage") &&
+            document.getElementById("saltPercentage").value
+        );
+        if (saltPercentage > 2.75) {
+          swal("Get a large glass of water ready. You sure you want that much salt?");
+        }
+        if (saltPercentage == 0) {
+          swal("Bread without salt is like Donald Trump. Tasteless.");
+        }
+        var yeastPercentage = Number(
+          document.getElementById("yeastPercentage") &&
+            document.getElementById("yeastPercentage").value
+        );
+        if (yeastPercentage > 2) {
+          swal("You must be in a rush. How much yeast are you using?");
+        }
+        var oilPercentage = Number(
+          document.getElementById("oilPercentage") &&
+            document.getElementById("oilPercentage").value
+        );
+        if (oilPercentage > 15) {
+          swal("Are you deep frying? That's a lot of oil.");
+        }
+        var sugarPercentage = Number(
+          document.getElementById("sugarPercentage") &&
+            document.getElementById("sugarPercentage").value
+        );
+        if (sugarPercentage > 20) {
+          swal("Are you baking bread or making rock candy? That's a lot of sugar.");
+        }
+        var diastaticMaltPercentage = Number(
+          document.getElementById("diastaticMaltPercentage") &&
+            document.getElementById("diastaticMaltPercentage").value
+        );
+        var bakingSodaPercentage = Number(
+          document.getElementById("bakingSodaPercentage") &&
+            document.getElementById("bakingSodaPercentage").value
+        );
+        var bakingPowderPercentage = Number(
+          document.getElementById("bakingPowderPercentage") &&
+            document.getElementById("bakingPowderPercentage").value
+        );
+        var butterPercentage = Number(
+          document.getElementById("butterPercentage") &&
+            document.getElementById("butterPercentage").value
+        );
+        var solidAPercentage = Number(
+          document.getElementById("solidAPercentage") &&
+            document.getElementById("solidAPercentage").value
+        );
+        var liquidAPercentage = Number(
+          document.getElementById("liquidAPercentage") &&
+            document.getElementById("liquidAPercentage").value
+        );
+        var milkPercentage = Number(
+          document.getElementById("milkPercentage") &&
+            document.getElementById("milkPercentage").value
+        );
+        var hydrationRatio = doughWeight / (hydrationDough + 100);
+        var liquidAndWaterTotal = Math.round(hydrationDough * hydrationRatio);
+        var solidAndFlourTotal = doughWeight - liquidAndWaterTotal;
+        var sourDoughWeight = calculateWeight(
+          sourDoughPercentage,
+          hydrationRatio,
+          sourDoughHydration,
+          2
+        );
+        var sourDoughSolid = sourDoughWeight.itemSolidWeight;
+        var sourDoughLiquid = Number(sourDoughWeight.itemHydrationWeight);
+        var saltWeight = calculateWeight(saltPercentage, hydrationRatio, 0, 0);
+        var saltSolid = saltWeight.itemSolidWeight;
+        var yeastWeight = calculateWeight(yeastPercentage, hydrationRatio, 0, 0);
+        var yeastSolid = yeastWeight.itemSolidWeight;
+        var oilWeight = calculateWeight(oilPercentage, hydrationRatio, 0, 0);
+        var oilSolid = oilWeight.itemSolidWeight;
+        var sugarWeight = calculateWeight(sugarPercentage, hydrationRatio, 100, 1);
+        var sugarLiquid = sugarWeight.itemHydrationWeight;
+        var diastaticMaltWeight = calculateWeight(
+          diastaticMaltPercentage,
+          hydrationRatio,
+          0,
+          0
+        );
+        var diastaticMaltSolid = diastaticMaltWeight.itemSolidWeight;
+        var eggWeight = calculateWeight(eggPercentage, hydrationRatio, 300, 2);
+        var eggSolid = eggWeight.itemSolidWeight;
+        var eggLiquid = eggWeight.itemHydrationWeight;
+        var honeyWeight = calculateWeight(honeyPercentage, hydrationRatio, 400, 2);
+        var honeySolid = honeyWeight.itemSolidWeight;
+        var honeyLiquid = honeyWeight.itemHydrationWeight;
+        var bakingSodaWeight = calculateWeight(
+          bakingSodaPercentage,
+          hydrationRatio,
+          0,
+          0
+        );
+        var bakingSodaSolid = bakingSodaWeight.itemSolidWeight;
+        var bakingPowderWeight = calculateWeight(
+          bakingPowderPercentage,
+          hydrationRatio,
+          0,
+          0
+        );
+        var bakingPowderSolid = bakingPowderWeight.itemSolidWeight;
+        var liquidAWeight = calculateWeight(
+          liquidAPercentage,
+          hydrationRatio,
+          100,
+          1
+        );
+        var liquidALiquid = liquidAWeight.itemHydrationWeight;
+        var milkWeight = calculateWeight(milkPercentage, hydrationRatio, 100, 1);
+        var milkLiquid = milkWeight.itemHydrationWeight;
+        var butterWeight = calculateWeight(butterPercentage, hydrationRatio, 20, 2);
+        var butterLiquid = butterWeight.itemHydrationWeight;
+        var butterSolid = butterWeight.itemSolidWeight;
+        var solidAWeight = calculateWeight(solidAPercentage, hydrationRatio, 0, 0);
+        var solidASolid = solidAWeight.itemSolidWeight;
+        var solidTotal = (
+          butterSolid +
+          saltSolid +
+          yeastSolid +
+          sourDoughSolid +
+          oilSolid +
+          diastaticMaltSolid +
+          eggSolid +
+          honeySolid +
+          bakingSodaSolid +
+          bakingPowderSolid +
+          solidASolid
+        ).toFixed(0);
+        var flour = solidAndFlourTotal - solidTotal;
+        var liquidTotal =
+          butterLiquid +
+          milkLiquid +
+          liquidALiquid +
+          honeyLiquid +
+          eggLiquid +
+          sugarLiquid +
+          sourDoughLiquid;
+        var waterRecipe = liquidAndWaterTotal - liquidTotal;
+
+        document.getElementById("flourRecipe").innerHTML = flour.toFixed(0);
+        document.getElementById("waterRecipe").innerHTML = waterRecipe.toFixed(0);
+        document.getElementById("saltRecipe").innerHTML = saltSolid.toFixed(0);
+        // document.getElementById("yeastRecipe").innerHTML = yeastSolid.toFixed(2);
+        // document.getElementById(
+        //   "diastaticMaltRecipe"
+        // ).innerHTML = diastaticMaltSolid.toFixed(0);
+        // document.getElementById("milkRecipe").innerHTML = milkLiquid.toFixed(0);
+        document.getElementById("sourDoughRecipe").innerHTML = (
+          sourDoughSolid + sourDoughLiquid
+        ).toFixed(0);
+        // document.getElementById("sugarRecipe").innerHTML = sugarLiquid.toFixed(0);
+        // document.getElementById("oilRecipe").innerHTML = oilSolid.toFixed(0);
+        // document.getElementById("eggRecipe").innerHTML = (
+        //   eggSolid + eggLiquid
+        // ).toFixed(0);
+        // document.getElementById("numberEggs").innerHTML = (
+        //   (eggSolid + eggLiquid) /
+        //   50
+        // ).toFixed(1);
+        // document.getElementById("honeyRecipe").innerHTML = (
+        //   honeySolid + honeyLiquid
+        // ).toFixed(0);
+        // document.getElementById(
+        //   "bakingPowderRecipe"
+        // ).innerHTML = bakingPowderSolid.toFixed(0);
+        // document.getElementById(
+        //   "bakingSodaRecipe"
+        // ).innerHTML = bakingSodaSolid.toFixed(0);
+        // document.getElementById("milkRecipe").innerHTML = milkLiquid.toFixed(0);
+        // document.getElementById("liquidARecipe").innerHTML = liquidALiquid.toFixed(0);
+        // document.getElementById("solidARecipe").innerHTML = solidASolid.toFixed(0);
+        // document.getElementById("teaspoonsYeast").innerHTML = (
+        //   yeastSolid / 3
+        // ).toFixed(1);
+        // document.getElementById("teaspoonsSalt").innerHTML = (saltSolid / 6).toFixed(
+        //   1
+        // );
+        // document.getElementById("butterRecipe").innerHTML = (
+        //   butterSolid + butterLiquid
+        // ).toFixed(0);
+        // document.getElementById("teaspoonsBakingPowder").innerHTML = (
+        //   bakingPowderSolid / 5
+        // ).toFixed(1);
+        // document.getElementById("teaspoonsBakingSoda").innerHTML = (
+        //   bakingSodaSolid / 5
+        // ).toFixed(1);
+      }
+
+      function calculateWeight(itemPercentage, ratio, itemHydration, itemType) {
+        var itemWeight = itemPercentage * ratio;
+        if (itemType == 0) {
+          var type = 0;
+          var itemHydrationWeight = 0;
+          var itemSolidWeight = Number(((itemWeight * 100) / 100).toFixed(2));
+          return {
+            type: type,
+            itemHydrationWeight: itemHydrationWeight,
+            itemSolidWeight: itemSolidWeight,
+          };
+        } else if (itemType == 1) {
+          var type = 1;
+          var itemHydrationWeight = Number(((itemWeight * 100) / 100).toFixed(2));
+          var itemSolidWeight = 0;
+          return {
+            type: type,
+            itemHydrationWeight: itemHydrationWeight,
+            itemSolidWeight: itemSolidWeight,
+          };
+        } else {
+          var type = 2;
+          var itemRatio = itemWeight / (itemHydration + 100);
+          var itemHydrationWeight = Number(
+            ((itemHydration * itemRatio * 10) / 10).toFixed(2)
+          );
+          var itemSolidWeight = Number((itemWeight - itemHydrationWeight).toFixed(2));
+          return {
+            type: type,
+            itemHydrationWeight: itemHydrationWeight,
+            itemSolidWeight: itemSolidWeight,
+          };
+        }
+      }
+
+      function totalNames(name) {
+        var arr = document.getElementsByName(name);
+        var tot = 0;
+        for (var i = 0; i < arr.length; i++) {
+          if (parseInt(arr[i].value)) tot += parseInt(arr[i].value);
+        }
+        return tot;
+      }
+
+      function totalClass(name) {
+        var arr = document.getElementsByClassName(name);
+        var tot = 0;
+        for (var i = 0; i < arr.length; i++) {
+          if (parseInt(arr[i].value)) tot += parseInt(arr[i].value);
+        }
+        return tot;
+      }
+
+      function sourDoughRatio() {
+        var cupsOrWeight = 0;
+        cupsOrWeight = document.getElementById("cupsOrWeight").value;
+        var waterWeight = Number(document.getElementById("waterWeight").value);
+        var flourWeight = Number(document.getElementById("flourWeight").value);
+        var sourDoughTest = 0;
+        var cupFlourWeight = 120;
+        if (waterWeight == 0 || flourWeight == 0) {
+          swal(
+            "No water? No flour? No bread. You must insert amounts for water and flour."
+          );
+          document.getElementById("sourDoughWater").innerHTML = 0;
+        } else if (cupsOrWeight == 1) {
+          sourDoughTest =
+            ((waterWeight * cupFlourWeight * 2) / (cupFlourWeight * flourWeight)) *
+            100;
+          document.getElementById("sourDoughWater").innerHTML = sourDoughTest;
+        } else {
+          sourDoughTest = (waterWeight / flourWeight) * 100;
+          document.getElementById("sourDoughWater").innerHTML = sourDoughTest;
+        }
+      }
+
+      function swal(message) {
+        alert(message);
+      }
+
+      function doAll() {
+        breadRecipeCreator();
+      }
+
+      document.addEventListener("DOMContentLoaded", function (event) {
+        document.getElementById("submit").addEventListener("click", () => doAll());
+      });
+    </script>
+  </body>
+</html>

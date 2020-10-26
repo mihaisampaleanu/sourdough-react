@@ -1,0 +1,14 @@
+.component {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  overflow: auto;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.textinput {
+  width: 100px;
+}
